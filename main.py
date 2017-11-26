@@ -70,7 +70,7 @@ def upload_files(files, final_dir):
     client = boto3.client('s3')
     s3_path = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
     for file in files:
-        client.upload_file(final_dir + "/" + file, os.environ['AWS_BUCKET'], s3_path + "/file")
+        client.upload_file(final_dir + "/" + file, os.environ['AWS_BUCKET'], s3_path + "/" + file)
 
 do_setup()
 while True:
