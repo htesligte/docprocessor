@@ -15,19 +15,22 @@ def do_setup():
 def start_scan():
     it = 1
     while True:
-        value = input("Enter number of pages or [p] to process: ")
-        if (value.isnumeric()):
-            try:
-                run_command("/usr/bin/scanimage --batch-start=" + str(
-                    it) + " --batch-count=" + value + " --resolution 300 --mode Color")
-                it += 1
-            except subprocess.CalledProcessError:
-                print("Error in scanimage, is the paper correctly placed?")
-                continue
-        elif(value == 'p' or value == 'P'):
-            print("Starting process in background...")
-            threading.Thread(target=process_dir, kwargs={'dirname': cur_dir}).start()
-            break
+        value = input("Enter number of pages to process: ")
+        try:
+            run_command("/usr/bin/scanimage --batch-start=" + str(
+                it) + " --batch-count=" + value + " --resolution 300 --mode Color")
+            it += 1
+            next_action = input("Continue scanning [c], process files [p], or restart [r]? ")
+            if next_action == 'p':
+                print("Starting process in background...")
+                threading.Thread(target=process_dir, kwargs={'dirname': cur_dir}).start()
+                break
+            if next_action == 'r':
+                shutil.rmtree(cur_dir)
+                break
+        except subprocess.CalledProcessError:
+            print("Error in scanimage, is the paper correctly placed?")
+            continue
 
 
 def process_dir(dirname):
