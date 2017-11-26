@@ -66,6 +66,11 @@ def process_pnm_file(pnm_file, dirname):
 
     run_command(gs_command)
 
+    # sometimes, the resulting file is 0 length. In that case, copy the original pdf and let's hope that one is better
+    if os.path.getsize(final_dir + "/" + basename + ".pdf") == 0:
+        print(final_dir + "/" + basename + ".pdf looks wrong.. Copying uncompressed file.")
+        shutil.copy(basename_with_dir + ".pdf", final_dir + "/" + basename + ".pdf")
+
 def upload_files(files, final_dir):
     client = boto3.client('s3')
     s3_path = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
