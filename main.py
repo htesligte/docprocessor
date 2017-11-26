@@ -15,7 +15,7 @@ def do_setup():
 def start_scan():
     it = 1
     while True:
-        value = input("Enter number of pages or nothing to process: ")
+        value = input("Enter number of pages or [p] to process: ")
         if (value.isnumeric()):
             try:
                 run_command("/usr/bin/scanimage --format tiff --batch-start=" + str(
@@ -24,7 +24,8 @@ def start_scan():
             except subprocess.CalledProcessError:
                 print("Error in scanimage, is the paper correctly placed?")
                 continue
-        else:
+        elif(value == 'p' or value == 'P'):
+            print("Starting process in background...")
             threading.Thread(target=process_dir, kwargs={'dirname': cur_dir}).start()
             break
 
