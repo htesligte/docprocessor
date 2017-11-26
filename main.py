@@ -3,7 +3,7 @@ import os, calendar, time, subprocess
 
 def run_command(command):
     print(command)
-    # subprocess.run(command, shell=True, check=True)
+    subprocess.run(command, shell=True, check=True)
 
 
 def do_setup():
