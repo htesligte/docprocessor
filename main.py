@@ -1,4 +1,8 @@
-import os, calendar, time
+import os, calendar, time, subprocess
+
+def run_command(command):
+	print(command)
+	subprocess.run(command, shell=True, check=True)
 
 
 def do_setup():
@@ -12,30 +16,26 @@ def start_scan():
     while True:
         value = input("Enter number of pages or nothing to process: ")
         if (value.isnumeric()):
-            print(
-                "/usr/bin/scanimage --format pnm --batch=page%04 --batch-count=" + value + " --resolution 300 --mode Color")
-            for i in range(0, int(value)):
-                f = open("page " + str(i) + ".pnm", 'w')
-                f.write(" ")
-                f.close()
+            run_command(
+                "/usr/bin/scanimage --format tiff --batch=page%04 --batch-count=" + value + " --resolution 300 --mode Color")
         else:
             process_dir(cur_dir)
             break
 
 
 def process_dir(dirname):
-    list_files = [f for f in os.listdir(dirname) if os.path.isfile(dirname + "/" + f) and f.endswith(".pnm")]
+    list_files = [f for f in os.listdir(dirname) if os.path.isfile(dirname + "/" + f) and f.endswith(".tiff")]
     for file in list_files:
-        process_pnm_file(dirname + "/" + file, dirname)
+        process_tiff_file(dirname + "/" + file, dirname)
 
 
-def process_pnm_file(pnm_file, dirname):
-    basename_with_dir = os.path.splitext(pnm_file)[0]
+def process_tiff_file(tiff_file, dirname):
+    basename_with_dir = os.path.splitext(tiff_file)[0]
     basename = os.path.basename(basename_with_dir)
     final_dir = dirname + "/final"
 
     # first, convert it to pdf
-    print("/usr/bin/convert \"" + pnm_file + "\" \"" + basename_with_dir + ".pdf\"")
+    run_command("/usr/bin/convert \"" + tiff_file + "\" \"" + basename_with_dir + ".pdf\"")
 
     # next, shrink the pdf file
     gs_command = "gs -q -dNOPAUSE -dBATCH -dSAFER"
@@ -53,7 +53,7 @@ def process_pnm_file(pnm_file, dirname):
     gs_command += " -sOutputFile=\"" + basename_with_dir + ".pdf\""
     gs_command += " \"" + final_dir + "/" + basename + ".pdf\""
 
-    print(gs_command)
+    run_command(gs_command)
     # and now continue uploading the files
     # after that, delete the directory
 
