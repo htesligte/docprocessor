@@ -2,7 +2,6 @@ import os, calendar, time, subprocess, boto3, datetime, shutil, threading
 
 
 def run_command(command):
-    print(command)
     subprocess.run(command, shell=True, check=True)
 
 
@@ -26,7 +25,7 @@ def start_scan():
                 print("Error in scanimage, is the paper correctly placed?")
                 continue
         else:
-            threading.Thread(target=process_dir, kwargs={'cur_dir': cur_dir}).start()
+            threading.Thread(target=process_dir, kwargs={'dirname': cur_dir}).start()
             break
 
 
