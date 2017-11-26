@@ -14,13 +14,16 @@ def do_setup():
 
 
 def start_scan():
-    it = 0
+    it = 1
     while True:
         value = input("Enter number of pages or nothing to process: ")
         if (value.isnumeric()):
-            it += 1
-            run_command(
-                "/usr/bin/scanimage --format tiff --batch-start=" + str(it) + " --batch-count=" + value + " --resolution 300 --mode Color")
+            try:
+                run_command("/usr/bin/scanimage --format tiff --batch-start=" + str(it) + " --batch-count=" + value + " --resolution 300 --mode Color")
+                it += 1
+            except subprocess.CalledProcessError:
+                print("Error in scanimage, is the paper correctly placed?")
+                continue
         else:
             process_dir(cur_dir)
             break
