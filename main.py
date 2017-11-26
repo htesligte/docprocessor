@@ -26,7 +26,7 @@ def start_scan():
                 print("Error in scanimage, is the paper correctly placed?")
                 continue
         else:
-            threading.Thread(target=process_dir, args=cur_dir)
+            threading.Thread(target=process_dir, args=cur_dir).start()
             break
 
 
