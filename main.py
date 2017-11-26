@@ -37,7 +37,7 @@ def process_dir(dirname):
     final_dir = dirname + "/final"
     list_pdfs = [f for f in os.listdir(final_dir) if os.path.isfile(final_dir + "/" + f) and f.endswith(".pdf")]
     upload_files(list_pdfs, final_dir)
-    # shutil.rmtree(dirname)
+    shutil.rmtree(dirname)
 
 
 def process_tiff_file(tiff_file, dirname):
