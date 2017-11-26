@@ -1,8 +1,9 @@
 import os, calendar, time, subprocess
 
+
 def run_command(command):
-	print(command)
-	subprocess.run(command, shell=True, check=True)
+    print(command)
+    # subprocess.run(command, shell=True, check=True)
 
 
 def do_setup():
@@ -13,11 +14,13 @@ def do_setup():
 
 
 def start_scan():
+    it = 0
     while True:
         value = input("Enter number of pages or nothing to process: ")
         if (value.isnumeric()):
+            it += 1
             run_command(
-                "/usr/bin/scanimage --format tiff --batch-count=" + value + " --resolution 300 --mode Color")
+                "/usr/bin/scanimage --format tiff --batch-start=" + str(it) + " --batch-count=" + value + " --resolution 300 --mode Color")
         else:
             process_dir(cur_dir)
             break
@@ -56,7 +59,6 @@ def process_tiff_file(tiff_file, dirname):
     run_command(gs_command)
     # and now continue uploading the files
     # after that, delete the directory
-
 
 
 do_setup()
