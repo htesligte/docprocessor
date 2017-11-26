@@ -17,14 +17,14 @@ def start_scan():
         value = input("Enter number of pages or nothing to process: ")
         if (value.isnumeric()):
             run_command(
-                "/usr/bin/scanimage --format tiff --batch=page%04 --batch-count=" + value + " --resolution 300 --mode Color")
+                "/usr/bin/scanimage --format tiff --batch-count=" + value + " --resolution 300 --mode Color")
         else:
             process_dir(cur_dir)
             break
 
 
 def process_dir(dirname):
-    list_files = [f for f in os.listdir(dirname) if os.path.isfile(dirname + "/" + f) and f.endswith(".tiff")]
+    list_files = [f for f in os.listdir(dirname) if os.path.isfile(dirname + "/" + f) and f.endswith(".tif")]
     for file in list_files:
         process_tiff_file(dirname + "/" + file, dirname)
 
@@ -50,8 +50,8 @@ def process_tiff_file(tiff_file, dirname):
     gs_command += " -dGrayImageResolution=300"
     gs_command += " -dMonoImageDownsampleType=/Bicubic"
     gs_command += " -dMonoImageResolution=300"
-    gs_command += " -sOutputFile=\"" + basename_with_dir + ".pdf\""
-    gs_command += " \"" + final_dir + "/" + basename + ".pdf\""
+    gs_command += " -sOutputFile=\"" + final_dir + "/" + basename + ".pdf\""
+    gs_command += " \"" + basename_with_dir + ".pdf\""
 
     run_command(gs_command)
     # and now continue uploading the files
