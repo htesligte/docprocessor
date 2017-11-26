@@ -18,7 +18,7 @@ def start_scan():
         value = input("Enter number of pages or [p] to process: ")
         if (value.isnumeric()):
             try:
-                run_command("/usr/bin/scanimage --format tiff --batch-start=" + str(
+                run_command("/usr/bin/scanimage --batch-start=" + str(
                     it) + " --batch-count=" + value + " --resolution 300 --mode Color")
                 it += 1
             except subprocess.CalledProcessError:
@@ -31,22 +31,22 @@ def start_scan():
 
 
 def process_dir(dirname):
-    list_files = [f for f in os.listdir(dirname) if os.path.isfile(dirname + "/" + f) and f.endswith(".tif")]
+    list_files = [f for f in os.listdir(dirname) if os.path.isfile(dirname + "/" + f) and f.endswith(".pnm")]
     for file in list_files:
-        process_tiff_file(dirname + "/" + file, dirname)
+        process_pnm_file(dirname + "/" + file, dirname)
     final_dir = dirname + "/final"
     list_pdfs = [f for f in os.listdir(final_dir) if os.path.isfile(final_dir + "/" + f) and f.endswith(".pdf")]
     upload_files(list_pdfs, final_dir)
     shutil.rmtree(dirname)
 
 
-def process_tiff_file(tiff_file, dirname):
-    basename_with_dir = os.path.splitext(tiff_file)[0]
+def process_pnm_file(pnm_file, dirname):
+    basename_with_dir = os.path.splitext(pnm_file)[0]
     basename = os.path.basename(basename_with_dir)
     final_dir = dirname + "/final"
 
     # first, convert it to pdf
-    run_command("/usr/bin/convert \"" + tiff_file + "\" \"" + basename_with_dir + ".pdf\"")
+    run_command("/usr/bin/convert \"" + pnm_file + "\" \"" + basename_with_dir + ".pdf\"")
 
     # next, shrink the pdf file
     gs_command = "gs -q -dNOPAUSE -dBATCH -dSAFER"
