@@ -1,4 +1,4 @@
-import os, calendar, time, subprocess
+import os, calendar, time, subprocess, boto3, datetime, shutil
 
 
 def run_command(command):
@@ -34,6 +34,10 @@ def process_dir(dirname):
     list_files = [f for f in os.listdir(dirname) if os.path.isfile(dirname + "/" + f) and f.endswith(".tif")]
     for file in list_files:
         process_tiff_file(dirname + "/" + file, dirname)
+    final_dir = dirname + "/final"
+    list_pdfs = [f for f in os.listdir(final_dir) if os.path.isfile(final_dir + "/" + f) and f.endswith(".pdf")]
+    upload_files(list_pdfs, final_dir)
+    # shutil.rmtree(dirname)
 
 
 def process_tiff_file(tiff_file, dirname):
@@ -61,9 +65,12 @@ def process_tiff_file(tiff_file, dirname):
     gs_command += " \"" + basename_with_dir + ".pdf\""
 
     run_command(gs_command)
-    # and now continue uploading the files
-    # after that, delete the directory
 
+def upload_files(files, final_dir):
+    client = boto3.client('s3')
+    s3_path = datetime.datetime.now().strftime('%Y/%m/%d %H:%M:%S')
+    for file in files:
+        client.upload_file(final_dir + "/" + file, os.environ['AWS_BUCKET'], s3_path)
 
 do_setup()
 while True:
