@@ -19,7 +19,13 @@ def start_scan():
         value = input("Enter number of pages or nothing to process: ")
         if (value.isnumeric()):
             try:
-                run_command("/usr/bin/scanimage --format tiff --batch-start=" + str(it) + " --batch-count=" + value + " --resolution 300 --mode Color")
+                batch_mode = input("Use batch mode (Y/N)?")
+                if batch_mode == "Y" or batch_mode == "y":
+                    run_command("/usr/bin/scanimage --format tiff --batch-prompt --batch-start=" + str(
+                        it) + " --batch-count=" + value + " --resolution 300 --mode Color")
+                else:
+                    run_command("/usr/bin/scanimage --format tiff --batch-start=" + str(
+                        it) + " --batch-count=" + value + " --resolution 300 --mode Color")
                 it += 1
             except subprocess.CalledProcessError:
                 print("Error in scanimage, is the paper correctly placed?")
